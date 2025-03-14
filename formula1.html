@@ -49,6 +49,7 @@
       background-color: white;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
     }
 
     .driver-item img {
@@ -70,6 +71,31 @@
     .driver-details {
       font-size: 14px;
       color: #555;
+    }
+
+    /* Estilos para el detalle del piloto */
+    #driver-detail {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    #driver-detail img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 10px;
+    }
+
+    .detail-section {
+      margin-bottom: 15px;
+    }
+
+    .detail-title {
+      font-weight: bold;
+      margin-bottom: 5px;
     }
 
     /* Responsive */
@@ -97,17 +123,37 @@
 
   <main>
     <ul id="driver-list"></ul>
+    <div id="driver-detail">
+      <h2 id="detail-name"></h2>
+      <div class="detail-section">
+        <p class="detail-title">Nacionalidad:</p>
+        <p id="detail-nationality"></p>
+      </div>
+      <div class="detail-section">
+        <p class="detail-title">Equipo:</p>
+        <p id="detail-team"></p>
+      </div>
+      <div class="detail-section">
+        <p class="detail-title">Foto del Coche:</p>
+        <img id="detail-car-image" src="" alt="Foto del Coche">
+      </div>
+      <div class="detail-section">
+        <p class="detail-title">Resultados:</p>
+        <ul id="detail-results"></ul>
+      </div>
+    </div>
   </main>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
+    let selectedDriverId = null;
+
     // Función para cargar las temporadas desde la API de Ergast
     async function loadSeasons() {
       const seasonSelect = document.getElementById('season-select');
       
       try {
-        // Obtener la lista de temporadas disponibles (últimos 10 años)
         const currentYear = new Date().getFullYear();
         for (let year = currentYear; year >= currentYear - 10; year--) {
           const option = document.createElement('option');
@@ -132,7 +178,6 @@
 
       try {
         console.log(`Buscando pilotos para la temporada: ${season}`); // Depuración
-        // Obtener los pilotos de la temporada seleccionada
         const response = await axios.get(`https://ergast.com/api/f1/${season}/drivers.json`);
         const drivers = response.data.MRData.DriverTable.Drivers;
 
@@ -141,10 +186,10 @@
           return;
         }
 
-        // Iterar sobre los pilotos y buscar sus fotos en The Sports DB
-        for (const driver of drivers) {
+        drivers.forEach(driver => {
           const listItem = document.createElement('li');
           listItem.className = 'driver-item';
+          listItem.dataset.driverId = driver.driverId; // Guardar ID del piloto
 
           const driverImage = document.createElement('img');
           driverImage.src = 'https://via.placeholder.com/60'; // Imagen por defecto
@@ -170,21 +215,69 @@
           driverList.appendChild(listItem);
 
           // Buscar foto del piloto en The Sports DB
-          try {
-            const sportsDBResponse = await axios.get(
-              `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodeURIComponent(driver.givenName + ' ' + driver.familyName)}`
-            );
+          axios.get(
+            `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodeURIComponent(driver.givenName + ' ' + driver.familyName)}`
+          ).then(sportsDBResponse => {
             const playerData = sportsDBResponse.data.player;
             if (playerData && playerData.length > 0 && playerData[0].strThumb) {
               driverImage.src = playerData[0].strThumb;
             }
-          } catch (sportsDBError) {
+          }).catch(sportsDBError => {
             console.warn(`No se encontró foto para ${driver.givenName} ${driver.familyName}:`, sportsDBError);
-          }
-        }
+          });
+
+          // Evento para mostrar detalles del piloto
+          listItem.addEventListener('click', () => showDriverDetails(driver.driverId, season));
+        });
       } catch (error) {
         console.error('Error al cargar los pilotos:', error);
         driverList.innerHTML = '<p>Ocurrió un error al cargar los pilotos.</p>';
+      }
+    }
+
+    // Función para mostrar detalles del piloto
+    async function showDriverDetails(driverId, season) {
+      const detailContainer = document.getElementById('driver-detail');
+      detailContainer.style.display = 'block';
+
+      try {
+        // Obtener detalles del piloto
+        const driverResponse = await axios.get(`https://ergast.com/api/f1/${season}/drivers/${driverId}.json`);
+        const driverData = driverResponse.data.MRData.DriverTable.Drivers[0];
+
+        // Mostrar nombre y nacionalidad
+        document.getElementById('detail-name').textContent = `${driverData.givenName} ${driverData.familyName}`;
+        document.getElementById('detail-nationality').textContent = driverData.nationality;
+
+        // Obtener equipo del piloto
+        const teamResponse = await axios.get(`https://ergast.com/api/f1/${season}/constructors.json`);
+        const teams = teamResponse.data.MRData.ConstructorTable.Constructors;
+        const team = teams.find(t => t.constructorId === driverData.constructorId);
+        document.getElementById('detail-team').textContent = team ? team.name : 'Desconocido';
+
+        // Obtener foto del coche (usando The Sports DB)
+        const sportsDBResponse = await axios.get(
+          `https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(team ? team.name : '')}`
+        );
+        const teamData = sportsDBResponse.data.teams;
+        const carImage = teamData && teamData.length > 0 ? teamData[0].strTeamBadge : '';
+        document.getElementById('detail-car-image').src = carImage || 'https://via.placeholder.com/200';
+
+        // Obtener resultados del piloto
+        const resultsResponse = await axios.get(`https://ergast.com/api/f1/${season}/drivers/${driverId}/results.json`);
+        const results = resultsResponse.data.MRData.RaceTable.Races;
+
+        const resultsList = document.getElementById('detail-results');
+        resultsList.innerHTML = ''; // Limpiar resultados anteriores
+
+        results.forEach(race => {
+          const resultItem = document.createElement('li');
+          resultItem.textContent = `${race.raceName}: Posición ${race.Results[0].position}`;
+          resultsList.appendChild(resultItem);
+        });
+      } catch (error) {
+        console.error('Error al cargar los detalles del piloto:', error);
+        detailContainer.innerHTML = '<p>Ocurrió un error al cargar los detalles del piloto.</p>';
       }
     }
 
