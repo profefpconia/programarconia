@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Meta viewport mejorado -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Buscador de Ciudades</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px; /* Reducido para móviles */
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        #map { 
+            height: 70vh;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .search-container {
+            display: flex;
+            flex-wrap: wrap; /* Permite ajuste en móviles */
+            gap: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        input {
+            flex: 1 1 200px; /* Flexibilidad en tamaños pequeños */
+            min-width: 0; /* Corrige overflow en móviles */
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            flex: 1 1 auto; /* Botones se ajustan mejor */
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap; /* Evita salto de línea */
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+
+        /* Mejoras específicas para móviles */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            
+            .search-container {
+                flex-direction: column; /* Apila elementos en móviles */
+            }
+            
+            input, button {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            #map {
+                height: 75vh; /* Más espacio vertical */
+                margin-top: 10px;
+            }
+            
+            .leaflet-popup-content {
+                max-width: 250px !important; /* Popups más pequeños */
+                font-size: 14px;
+            }
+            
+            button {
+                padding: 14px; /* Más grande para touch */
+            }
+        }
+
+        /* Ajustes para tablets */
+        @media (min-width: 481px) and (max-width: 768px) {
+            #map {
+                height: 72vh;
+            }
+            
+            .search-container {
+                gap: 6px;
+            }
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin: 10px auto;
+            text-align: center;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .leaflet-popup-content img {
+            max-width: 100%; /* Imágenes responsivas */
+            height: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" id="cityInput" placeholder="Introduce una ciudad (ej: Madrid)">
+        <button onclick="searchCity()">Buscar</button>
+        <button onclick="clearSearch()" style="background: #dc3545;">Limpiar</button>
+        <div class="error-message" id="errorMsg"></div>
+    </div>
+    <div id="map"></div>
+    <div class="loading" id="loading">Cargando...</div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Inicialización mejorada del mapa
+        let map = L.map('map', {
+            zoomControl: false // Movemos el control de zoom
+        }).setView([40.4165, -3.70256], 6);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        // Posicionar control de zoom para móviles
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(map);
+
+        let currentMarker = null;
+        const API_OWM = 'TU_API_KEY_OPENWEATHERMAP';
+
+        // Función para redimensionar el mapa en móviles
+        function adjustMapHeight() {
+            const mapDiv = document.getElementById('map');
+            if (window.innerWidth <= 480px) {
+                mapDiv.style.height = '75vh';
+            } else {
+                mapDiv.style.height = '70vh';
+            }
+            map.invalidateSize(); // Importante para Leaflet en móviles
+        }
+
+        // Listener para cambios de tamaño
+        window.addEventListener('resize', adjustMapHeight);
+        adjustMapHeight(); // Ejecutar al cargar
+
+        // Resto del código JavaScript igual...
+        // (Mantener el mismo código JavaScript que proporcionaste anteriormente)
+    </script>
+</body>
+</html>
