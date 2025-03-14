@@ -2,54 +2,56 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- Meta viewport mejorado -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscador de Ciudades</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         body {
             margin: 0;
-            padding: 10px; /* Reducido para móviles */
+            padding: 10px;
             font-family: Arial, sans-serif;
-            min-height: 100vh;
         }
 
         #map { 
-            height: 70vh;
+            height: 60vh;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 10px;
             border-radius: 8px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
         .search-container {
             display: flex;
-            flex-wrap: wrap; /* Permite ajuste en móviles */
-            gap: 8px;
-            max-width: 600px;
+            flex-direction: row;
+            gap: 10px;
+            max-width: 100%;
             margin: 0 auto;
-            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         input {
-            flex: 1 1 200px; /* Flexibilidad en tamaños pequeños */
-            min-width: 0; /* Corrige overflow en móviles */
+            flex: 1;
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
+            width: 200px;
         }
 
         button {
-            flex: 1 1 auto; /* Botones se ajustan mejor */
-            padding: 12px;
+            padding: 12px 24px;
             background: #007bff;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             transition: background 0.3s;
-            white-space: nowrap; /* Evita salto de línea */
+            min-width: 120px;
+        }
+
+        button:hover {
+            background: #0056b3;
         }
 
         .loading {
@@ -62,62 +64,39 @@
             background: rgba(0,0,0,0.8);
             color: white;
             border-radius: 4px;
-            z-index: 1000;
         }
 
-        /* Mejoras específicas para móviles */
-        @media (max-width: 480px) {
-            body {
-                padding: 5px;
-            }
-            
-            .search-container {
-                flex-direction: column; /* Apila elementos en móviles */
-            }
-            
-            input, button {
-                width: 100%;
-                box-sizing: border-box;
-            }
-            
-            #map {
-                height: 75vh; /* Más espacio vertical */
-                margin-top: 10px;
-            }
-            
-            .leaflet-popup-content {
-                max-width: 250px !important; /* Popups más pequeños */
-                font-size: 14px;
-            }
-            
-            button {
-                padding: 14px; /* Más grande para touch */
-            }
-        }
-
-        /* Ajustes para tablets */
-        @media (min-width: 481px) and (max-width: 768px) {
-            #map {
-                height: 72vh;
-            }
-            
-            .search-container {
-                gap: 6px;
-            }
+        .leaflet-popup-content img {
+            margin-top: 10px;
+            border-radius: 4px;
         }
 
         .error-message {
             color: #dc3545;
-            margin: 10px auto;
+            margin-top: 10px;
             text-align: center;
-            width: 100%;
-            font-size: 14px;
         }
 
-        .leaflet-popup-content img {
-            max-width: 100%; /* Imágenes responsivas */
-            height: auto;
-            margin: 10px 0;
+        /* Media queries para ajustar en pantallas pequeñas */
+        @media (max-width: 600px) {
+            .search-container {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            input {
+                width: 100%;
+                font-size: 14px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            #map {
+                height: 50vh;
+            }
         }
     </style>
 </head>
@@ -126,47 +105,134 @@
         <input type="text" id="cityInput" placeholder="Introduce una ciudad (ej: Madrid)">
         <button onclick="searchCity()">Buscar</button>
         <button onclick="clearSearch()" style="background: #dc3545;">Limpiar</button>
-        <div class="error-message" id="errorMsg"></div>
     </div>
+    <div class="error-message" id="errorMsg"></div>
     <div id="map"></div>
     <div class="loading" id="loading">Cargando...</div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Inicialización mejorada del mapa
-        let map = L.map('map', {
-            zoomControl: false // Movemos el control de zoom
-        }).setView([40.4165, -3.70256], 6);
-        
+        let map = L.map('map').setView([40.4165, -3.70256], 6);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
-        
-        // Posicionar control de zoom para móviles
-        L.control.zoom({
-            position: 'bottomright'
-        }).addTo(map);
 
         let currentMarker = null;
-        const API_OWM = 'TU_API_KEY_OPENWEATHERMAP';
+        const API_OWM = 'TU_API_KEY_OPENWEATHERMAP'; // Registra tu clave en openweathermap.org
 
-        // Función para redimensionar el mapa en móviles
-        function adjustMapHeight() {
-            const mapDiv = document.getElementById('map');
-            if (window.innerWidth <= 480px) {
-                mapDiv.style.height = '75vh';
-            } else {
-                mapDiv.style.height = '70vh';
+        async function searchCity() {
+            const cityInput = document.getElementById('cityInput');
+            const errorMsg = document.getElementById('errorMsg');
+            const loading = document.getElementById('loading');
+            
+            if (!cityInput.value.trim()) {
+                showError('Por favor introduce un nombre de ciudad');
+                return;
             }
-            map.invalidateSize(); // Importante para Leaflet en móviles
+
+            try {
+                loading.style.display = 'block';
+                errorMsg.textContent = '';
+
+                // 1. Obtener coordenadas
+                const geoResponse = await fetch(
+                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityInput.value)}`
+                );
+                
+                if (!geoResponse.ok) throw new Error('Error en geocodificación');
+                
+                const geoData = await geoResponse.json();
+                if (geoData.length === 0) throw new Error('Ciudad no encontrada');
+
+                const { lat, lon, display_name } = geoData[0];
+                const cleanCityName = display_name.split(',')[0].trim();
+
+                // 2. Actualizar mapa
+                if (currentMarker) map.removeLayer(currentMarker);
+                
+                currentMarker = L.marker([lat, lon])
+                    .addTo(map)
+                    .bindPopup('Cargando información...')
+                    .openPopup();
+
+                map.setView([lat, lon], 12);
+
+                // 3. Obtener datos de Wikipedia
+                let wikiContent = '';
+                try {
+                    const wikiResponse = await fetch(
+                        `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanCityName)}`
+                    );
+                    
+                    if (!wikiResponse.ok) throw new Error();
+                    
+                    const wikiData = await wikiResponse.json();
+                    
+                    wikiContent = `  
+                        ${wikiData.extract ? `<p>${wikiData.extract}</p>` : ''}
+                        ${wikiData.thumbnail?.source ? 
+                            `<img src="${wikiData.thumbnail.source}" width="200" alt="${wikiData.title}">` : ''}
+                    `;
+
+                    const wikiLink = wikiData.content_urls?.desktop?.page || 
+                                  `https://es.wikipedia.org/wiki/${encodeURIComponent(cleanCityName)}`;
+                    
+                    wikiContent += `<a href="${wikiLink}" target="_blank">Leer más en Wikipedia</a>`;
+
+                } catch (wikiError) {
+                    wikiContent = '<p>Información de Wikipedia no disponible</p>';
+                }
+
+                // 4. Obtener tiempo (opcional)
+                let weatherContent = '';
+                try {
+                    const weatherResponse = await fetch(
+                        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_OWM}&units=metric&lang=es`
+                    );
+                    
+                    const weatherData = await weatherResponse.json();
+                    
+                    weatherContent = `
+                        <h4>Tiempo actual:</h4>
+                        <p>${weatherData.weather[0].description}</p>
+                        <p>Temperatura: ${weatherData.main.temp}°C</p>
+                        <p>Humedad: ${weatherData.main.humidity}%</p>
+                    `;
+                } catch (weatherError) {
+                    weatherContent = '<p>Datos meteorológicos no disponibles</p>';
+                }
+
+                // Actualizar popup
+                currentMarker.setPopupContent(`
+                    <h3>${display_name}</h3>
+                    ${weatherContent}
+                    ${wikiContent}
+                `);
+
+            } catch (error) {
+                showError(error.message);
+                if (currentMarker) map.removeLayer(currentMarker);
+            } finally {
+                loading.style.display = 'none';
+            }
         }
 
-        // Listener para cambios de tamaño
-        window.addEventListener('resize', adjustMapHeight);
-        adjustMapHeight(); // Ejecutar al cargar
+        function clearSearch() {
+            document.getElementById('cityInput').value = '';
+            document.getElementById('errorMsg').textContent = '';
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+                currentMarker = null;
+            }
+            map.setView([40.4165, -3.70256], 6);
+        }
 
-        // Resto del código JavaScript igual...
-        // (Mantener el mismo código JavaScript que proporcionaste anteriormente)
+        function showError(message) {
+            document.getElementById('errorMsg').textContent = message;
+            setTimeout(() => {
+                document.getElementById('errorMsg').textContent = '';
+            }, 5000);
+        }
     </script>
 </body>
 </html>
