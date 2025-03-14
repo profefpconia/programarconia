@@ -80,7 +80,7 @@
       background-color: white;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      display: none;
+      display: none; /* Oculto por defecto */
     }
 
     #driver-detail img {
@@ -238,15 +238,23 @@
     // Función para mostrar detalles del piloto
     async function showDriverDetails(driverId, season) {
       const detailContainer = document.getElementById('driver-detail');
-      detailContainer.style.display = 'block';
+      detailContainer.style.display = 'none'; // Ocultar mientras se carga
+      detailContainer.innerHTML = ''; // Limpiar contenido anterior
 
       try {
+        console.log(`Cargando detalles para el piloto con ID: ${driverId}, temporada: ${season}`);
+
         // Obtener detalles del piloto
         const driverResponse = await axios.get(`https://ergast.com/api/f1/${season}/drivers/${driverId}.json`);
         const driverData = driverResponse.data.MRData.DriverTable.Drivers[0];
 
+        if (!driverData) {
+          throw new Error('No se encontraron datos del piloto.');
+        }
+
         // Mostrar nombre y nacionalidad
-        document.getElementById('detail-name').textContent = `${driverData.givenName} ${driverData.familyName}`;
+        const detailName = document.getElementById('detail-name');
+        detailName.textContent = `${driverData.givenName} ${driverData.familyName}`;
         document.getElementById('detail-nationality').textContent = driverData.nationality;
 
         // Obtener equipo del piloto
@@ -270,14 +278,22 @@
         const resultsList = document.getElementById('detail-results');
         resultsList.innerHTML = ''; // Limpiar resultados anteriores
 
-        results.forEach(race => {
-          const resultItem = document.createElement('li');
-          resultItem.textContent = `${race.raceName}: Posición ${race.Results[0].position}`;
-          resultsList.appendChild(resultItem);
-        });
+        if (results.length === 0) {
+          resultsList.innerHTML = '<li>No hay resultados disponibles para este piloto.</li>';
+        } else {
+          results.forEach(race => {
+            const resultItem = document.createElement('li');
+            resultItem.textContent = `${race.raceName}: Posición ${race.Results[0].position}`;
+            resultsList.appendChild(resultItem);
+          });
+        }
+
+        // Mostrar el contenedor de detalles
+        detailContainer.style.display = 'block';
       } catch (error) {
         console.error('Error al cargar los detalles del piloto:', error);
-        detailContainer.innerHTML = '<p>Ocurrió un error al cargar los detalles del piloto.</p>';
+        detailContainer.innerHTML = '<p>Ocurrió un error al cargar los detalles del piloto. Por favor, intenta más tarde.</p>';
+        detailContainer.style.display = 'block';
       }
     }
 
