@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfoli - Projectes Informàtics</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Paleta de colors */
+        :root {
+            --primary: #2A75C1; /* Azul principal */
+            --secondary: #1E9A3E; /* Verde */
+            --background: #F9F9F9; /* Fondo claro */
+            --text: #333333; /* Texto oscuro */
+            --accent: #FF6F61; /* Acento naranja */
+            --white: #FFFFFF; /* Blanco */
+        }
+
+        /* Estils generals */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Banner */
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        header img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Menú */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        nav ul li a {
+            color: var(--white);
+            font-size: 16px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+
+        /* Secció de projectes */
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+
+        .project-card {
+            background-color: var(--text);
+            color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .project-card h3 {
+            margin: 15px 0;
+        }
+
+        .project-card p {
+            margin: 10px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: var(--white);
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+        }
+
+        /* Peu de pàgina */
+        footer {
+            background-color: var(--text);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        footer .social-icons a {
+            color: var(--white);
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        footer .social-icons a:hover {
+            color: var(--accent);
+        }
+
+        /* Aceptació de cookies */
+        .cookie-consent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--text);
+            color: var(--white);
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .cookie-consent button {
+            background-color: var(--accent);
+            color: var(--white);
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cookie-consent button:hover {
+            background-color: var(--secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .projects {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Banner i Menú -->
+    <header>
+        <img src="https://via.placeholder.com/1500x300" alt="Imatge del Banner">
+        <nav>
+            <ul>
+                <li><a href="#home">Inici</a></li>
+                <li><a href="#projects">Projectes</a></li>
+                <li><a href="#about">Sobre Mi</a></li>
+                <li><a href="#contact">Contacte</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Secció de Projectes -->
+    <section id="projects" class="projects">
+        <div class="project-card">
+            <img src="https://via.placeholder.com/300x200" alt="Projecte 1">
+            <h3>Projecte 1</h3>
+            <p>Descripció breu del projecte 1.</p>
+            <a href="project1.html" class="btn">Veure més</a>
+        </div>
+        <div class="project-card">
+            <img src="https://via.placeholder.com/300x200" alt="Projecte 2">
+            <h3>Projecte 2</h3>
+            <p>Descripció breu del projecte 2.</p>
+            <a href="project2.html" class="btn">Veure més</a>
+        </div>
+        <div class="project-card">
+            <img src="https://via.placeholder.com/300x200" alt="Projecte 3">
+            <h3>Projecte 3</h3>
+            <p>Descripció breu del projecte 3.</p>
+            <a href="project3.html" class="btn">Veure més</a>
+        </div>
+    </section>
+
+    <!-- Peu de pàgina -->
+    <footer>
+        <p>Segueix-me a les meves xarxes socials:</p>
+        <div class="social-icons">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p><a href="mailto:contacte@exemple.com">contacte@exemple.com</a></p>
+        <p><a href="#">RSS</a></p>
+    </footer>
+
+    <!-- Acceptació de Cookies -->
+    <div class="cookie-consent">
+        <p>Utilitzem cookies per millorar la teva experiència a la web. Si continuïs navegant, acceptes l'ús de cookies.</p>
+        <button onclick="acceptCookies()">Acceptar</button>
+    </div>
+
+    <script>
+        function acceptCookies() {
+            document.querySelector('.cookie-consent').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
