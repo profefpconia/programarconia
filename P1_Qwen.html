@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Portafolio</title>
+  <style>
+    /* Paleta de colores */
+    :root {
+      --color-primary: #2c3e50; /* Azul oscuro */
+      --color-secondary: #34495e; /* Azul grisáceo */
+      --color-accent: #e74c3c; /* Rojo */
+      --color-background: #ecf0f1; /* Gris claro */
+      --color-text: #000000; /* Negro */
+    }
+
+    /* Estilos generales */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: var(--color-background);
+      color: var(--color-text);
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--color-accent);
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background: url('banner.jpg') no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    header nav {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    header nav a {
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Sección de proyectos */
+    .projects {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--color-primary);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .project-card:hover {
+      transform: scale(1.05);
+    }
+
+    .project-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .project-card h3 {
+      margin: 10px 0;
+    }
+
+    .project-card p {
+      font-size: 0.9em;
+    }
+
+    .project-card a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: var(--color-accent);
+      color: white;
+      border-radius: 4px;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--color-secondary);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    footer a {
+      margin: 0 10px;
+      color: white;
+    }
+
+    /* Aviso de cookies */
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--color-primary);
+      color: white;
+      padding: 15px;
+      text-align: center;
+      display: none;
+      z-index: 1000;
+    }
+
+    .cookie-banner button {
+      margin: 0 10px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .cookie-banner button.accept {
+      background: var(--color-accent);
+      color: white;
+    }
+
+    .cookie-banner button.reject {
+      background: #7f8c8d;
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header nav {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      header nav a {
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>Mi Portafolio</h1>
+    <nav>
+      <a href="#inicio">Inicio</a>
+      <a href="#proyectos">Proyectos</a>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </header>
+
+  <!-- Sección de proyectos -->
+  <section id="proyectos" class="projects">
+    <div class="project-card">
+      <img src="foto1.jpg" alt="Proyecto 1">
+      <h3>Proyecto 1</h3>
+      <p>Descripción breve del proyecto 1.</p>
+      <a href="#">Ver más</a>
+    </div>
+    <div class="project-card">
+      <img src="foto1.jpg" alt="Proyecto 2">
+      <h3>Proyecto 2</h3>
+      <p>Descripción breve del proyecto 2.</p>
+      <a href="#">Ver más</a>
+    </div>
+    <div class="project-card">
+      <img src="foto1.jpg" alt="Proyecto 3">
+      <h3>Proyecto 3</h3>
+      <p>Descripción breve del proyecto 3.</p>
+      <a href="#">Ver más</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <a href="#">Facebook</a>
+    <a href="#">Twitter</a>
+    <a href="#">RSS</a>
+    <a href="#">Email</a>
+  </footer>
+
+  <!-- Aviso de cookies -->
+  <div class="cookie-banner">
+    <p>Este sitio utiliza cookies para mejorar tu experiencia. <a href="#" style="color: #e74c3c;">Política de privacidad</a>.</p>
+    <button class="accept">Aceptar</button>
+    <button class="reject">Rechazar</button>
+  </div>
+
+  <script>
+    // Aviso de cookies
+    const cookieBanner = document.querySelector('.cookie-banner');
+    const acceptButton = document.querySelector('.cookie-banner .accept');
+    const rejectButton = document.querySelector('.cookie-banner .reject');
+
+    if (!localStorage.getItem('cookiesAccepted')) {
+      cookieBanner.style.display = 'block';
+    }
+
+    acceptButton.addEventListener('click', () => {
+      localStorage.setItem('cookiesAccepted', 'true');
+      cookieBanner.style.display = 'none';
+    });
+
+    rejectButton.addEventListener('click', () => {
+      localStorage.setItem('cookiesRejected', 'true');
+      cookieBanner.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
