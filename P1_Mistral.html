@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #000000;
+            background-color: #F5F5F5;
+        }
+        header {
+            background: url('banner.jpg') no-repeat center center/cover;
+            height: 300px;
+            position: relative;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        nav a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+        }
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .project {
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .project img {
+            width: 100%;
+            height: auto;
+        }
+        .project-content {
+            padding: 20px;
+        }
+        .project-content h3 {
+            margin-top: 0;
+        }
+        .project-content p {
+            margin: 10px 0;
+        }
+        .project-content button {
+            background-color: #1E90FF;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .project-content button:hover {
+            background-color: #007BFF;
+        }
+        footer {
+            background-color: #000000;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 20px 0;
+        }
+        footer a {
+            color: #98FB98;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #FFFFFF;
+            padding: 10px;
+            text-align: center;
+            display: none;
+        }
+        .cookie-banner button {
+            background-color: #1E90FF;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="#inicio">Inicio</a>
+            <a href="#proyectos">Proyectos</a>
+            <a href="#sobre-mi">Sobre mí</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+    </header>
+    <div class="container" id="proyectos">
+        <section class="projects">
+            <div class="project">
+                <img src="foto1.jpg" alt="Proyecto 1">
+                <div class="project-content">
+                    <h3>Proyecto 1</h3>
+                    <p>Breve descripción del proyecto 1.</p>
+                    <button onclick="verMas('proyecto1')">Ver más</button>
+                </div>
+            </div>
+            <div class="project">
+                <img src="foto1.jpg" alt="Proyecto 2">
+                <div class="project-content">
+                    <h3>Proyecto 2</h3>
+                    <p>Breve descripción del proyecto 2.</p>
+                    <button onclick="verMas('proyecto2')">Ver más</button>
+                </div>
+            </div>
+            <div class="project">
+                <img src="foto1.jpg" alt="Proyecto 3">
+                <div class="project-content">
+                    <h3>Proyecto 3</h3>
+                    <p>Breve descripción del proyecto 3.</p>
+                    <button onclick="verMas('proyecto3')">Ver más</button>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer id="contacto">
+        <a href="#">Redes Sociales</a>
+        <a href="#">RSS</a>
+        <a href="#">Contacto</a>
+        <a href="#">Email</a>
+    </footer>
+    <div class="cookie-banner" id="cookieBanner">
+        <p>Este sitio web utiliza cookies. <a href="#" style="color: #98FB98;">Política de privacidad</a></p>
+        <button onclick="aceptarCookies()">Aceptar</button>
+        <button onclick="rechazarCookies()">Rechazar</button>
+    </div>
+    <script>
+        function verMas(proyecto) {
+            alert('Redirigiendo a la página del proyecto: ' + proyecto);
+        }
+
+        function aceptarCookies() {
+            document.getElementById('cookieBanner').style.display = 'none';
+        }
+
+        function rechazarCookies() {
+            document.getElementById('cookieBanner').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('cookieBanner').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
