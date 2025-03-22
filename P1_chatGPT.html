@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portafolio</title>
+    <style>
+        :root {
+            --color1: #1e1e1e;
+            --color2: #292929;
+            --color3: #ffb400;
+            --color4: #ffffff;
+            --color5: #ff5733;
+        }
+        body, html { margin: 0; padding: 0; font-family: Arial, sans-serif; background: var(--color1); color: var(--color4); }
+        header { background: url('banner.jpg') center/cover no-repeat; text-align: center; padding: 60px 20px; }
+        nav { display: flex; justify-content: center; gap: 20px; background: var(--color2); padding: 10px; }
+        nav a { color: var(--color4); text-decoration: none; font-weight: bold; }
+        .proyectos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px; }
+        .proyecto { background: var(--color2); padding: 15px; text-align: center; border-radius: 8px; }
+        .proyecto img { width: 100%; border-radius: 8px; }
+        .boton { display: inline-block; margin-top: 10px; padding: 10px; background: var(--color3); color: var(--color1); text-decoration: none; border-radius: 5px; }
+        footer { background: var(--color2); text-align: center; padding: 20px; }
+        .cookies { position: fixed; bottom: 10px; left: 10px; right: 10px; background: var(--color5); padding: 15px; text-align: center; display: none; }
+        .cookies button { margin: 5px; padding: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mi Portafolio</h1>
+    </header>
+    <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="#proyectos">Proyectos</a>
+        <a href="#sobre-mi">Sobre mí</a>
+        <a href="#contacto">Contacto</a>
+    </nav>
+    <section id="proyectos" class="proyectos">
+        <div class="proyecto">
+            <img src="foto1.jpg" alt="Proyecto 1">
+            <h3>Proyecto 1</h3>
+            <p>Descripción breve del proyecto.</p>
+            <a href="#" class="boton">Ver más</a>
+        </div>
+        <div class="proyecto">
+            <img src="foto1.jpg" alt="Proyecto 2">
+            <h3>Proyecto 2</h3>
+            <p>Descripción breve del proyecto.</p>
+            <a href="#" class="boton">Ver más</a>
+        </div>
+        <div class="proyecto">
+            <img src="foto1.jpg" alt="Proyecto 3">
+            <h3>Proyecto 3</h3>
+            <p>Descripción breve del proyecto.</p>
+            <a href="#" class="boton">Ver más</a>
+        </div>
+    </section>
+    <footer>
+        <p>Sígueme en redes: <a href="#">Twitter</a> | <a href="#">LinkedIn</a> | <a href="#">GitHub</a></p>
+        <p>Contacto: <a href="mailto:email@example.com">email@example.com</a></p>
+    </footer>
+    <div class="cookies" id="cookies">
+        <p>Este sitio utiliza cookies. <a href="#">Más info</a></p>
+        <button onclick="aceptarCookies()">Aceptar</button>
+        <button onclick="rechazarCookies()">Rechazar</button>
+    </div>
+    <script>
+        function aceptarCookies() {
+            localStorage.setItem("cookiesAceptadas", "true");
+            document.getElementById("cookies").style.display = "none";
+        }
+        function rechazarCookies() {
+            localStorage.setItem("cookiesAceptadas", "false");
+            document.getElementById("cookies").style.display = "none";
+        }
+        window.onload = function () {
+            if (!localStorage.getItem("cookiesAceptadas")) {
+                document.getElementById("cookies").style.display = "block";
+            }
+        };
+    </script>
+</body>
+</html>
